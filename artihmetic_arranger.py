@@ -1,57 +1,88 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec 23 22:20:49 2020
+Created on Tue Dec 29 12:11:06 2020
 
 @author: nawaz
 """
 
-def arithmetic_arranger(problems, needAnswer = False):
-    #Situation 1 Error: More than 5 problems
-    if len(problems) >5:
-        return ("Error: Too many problems.")
-    line1=line2=line3=line4= ''
-    for i in problems:
-        split_prob = i.split()
-        num1 = split_prob[0]
-        operator=split_prob[1]
-        num2 = split_prob[2]
-        if (operator!='+' and operator!='-'):
-            print("Error: Operator must be '+' or '-'.")
-        if num1.isdigit() == 0 or num2.isdigit()== 0:
-            print("Error: Numbers must only contain digits.")
+# Exception Handling function
+def exception_handling(number1, number2, operator):
+    # Only digit exception
+    try:
+        int(number1)
+    except:
+        return "Error: Numbers must only contain digits."
+    try:
+        int(number2)
+    except:
+        return "Error: Numbers must only contain digits."
+    # More than 4 digit no. exception
+    try:
+        if len(number1) > 4 or len(number2) > 4:
+            raise BaseException
+    except:
+        return "Error: Numbers cannot be more than four digits."
+    # Operator must be + | - exception.
+    try:
+        if operator != '+' and operator != '-':
+            raise BaseException
+    except:
+        return "Error: Operator must be '+' or '-'."
+    return ""
+
+
+def arithmetic_arranger(problems, displayMode=False):
+
+    start = True
+    side_space = "    "
+    line1 = line2 = line3 = line4 = ""
+    # Too many Problem exception
+    try:
+        if len(problems) > 5:
+            raise BaseException
+    except:
+        return "Error: Too many problems."
+    for prob in problems:
+        # Splitting the Problem into separate strings
+        separated_problem = prob.split()
+        # storing number 1
+        number1 = separated_problem[0]
+        # Storing the operator sign
+        operator = separated_problem[1]
+        # storing number 2
+        number2 = separated_problem[2]
+        exp = exception_handling(number1, number2, operator)
+        if exp != "":
+            return exp
+        no1 = int(number1)
+        no2 = int(number2)
+        # space contains the max no. os spaces required.
+        space = max(len(number1), len(number2))
+        # For first arithmetic arragement
+        if start == True:
+            line1 += number1.rjust(space + 2)
+            line2 += operator + ' ' + number2.rjust(space)
+            line3 += '-' * (space + 2)
+            if displayMode == True:
+                if operator == '+':
+                    line4 += str(no1 + no2).rjust(space + 2)
+                else:
+                    line4 += str(no1 - no2).rjust(space + 2)
+            start = False
+        # Other than first arithmetic arragement
         else:
-            if len(num1)>4 or len(num1)>4:
-                print("Error: Numbers cannot be more than four digits.")
-                break
-        space = max(len(num1), len(num2))
+            line1 += number1.rjust(space + 6)
+            line2 += operator.rjust(5) + ' ' + number2.rjust(space)
+            line3 += side_space + '-' * (space + 2)
+            if displayMode == True:
+                if operator == '+':
+                    line4 += side_space + str(no1 + no2).rjust(space + 2)
+                else:
+                    line4 += side_space + str(no1 - no2).rjust(space + 2)
+    # displayMode is Ture then append line4
+    if displayMode == True:
+        return line1 + '\n' + line2 + '\n' + line3 + '\n' + line4
+    return line1 + '\n' + line2 + '\n' + line3
 
-        line1 += num1.rjust(space + 2)
-        line2 += operator + ' ' + num2.rjust(space)
-        line3 += '-' * (space + 2)
-        print(line1)
-        print(line2)
-        print(line3)
-        """
-        if needAnswer == False:
-            if operator == '+':
-                line4 += str(num1 + num2).rjust(space + 2)
-            else:
-                line4 += str(num1 - num2).rjust(space + 2)
-
-         """   
-        
-    """
-    #2 Checking correct operators
-    correctOperators = "+" or "/"
-    for i in range(0, len(problems)):
-        if !=correctOperators in problems[i]:
-            print("Wrong!")
-    
-    """
-    
-    
-    
-
-
-(arithmetic_arranger(["1234 + 698", "2 - 2", "45 + 43", "123 + 49"]))
+print(arithmetic_arranger(["1234 + 698", "2 - 2", "45 + 43", "123 + 49"], True))
